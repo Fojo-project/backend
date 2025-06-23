@@ -89,7 +89,12 @@ return [
      * ],
      * ```
      */
-    'servers' => null,
+    'servers' => [
+        [
+            'url' => 'https://fojo-backend-production.up.railway.app',
+            'description' => 'Production',
+        ],
+    ],
 
     /**
      * Determines how Scramble stores the descriptions of enum cases.
