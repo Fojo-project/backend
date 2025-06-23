@@ -5,6 +5,5 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
 
-Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::middleware(['can:view-docs'])->get('/docs/api', fn(Request $request) => $request->user());
+Route::middleware(['auth:sanctum'])->get('/user', fn(Request $request) => $request->user());
