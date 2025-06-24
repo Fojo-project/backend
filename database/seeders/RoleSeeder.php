@@ -14,10 +14,10 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create(['name' => UserRole::SUPER_ADMIN->value, 'guard_name' => 'api']);
-        Role::create(['name' => UserRole::ADMIN->value, 'guard_name' => 'api']);
-        Role::create(['name' => UserRole::LEARNER->value, 'guard_name' => 'api']);
-        Role::create(['name' => UserRole::INSTRUCTOR->value, 'guard_name' => 'api']);
+        Role::create(['name' => 'super_admin', 'guard_name' => 'api']);
+        Role::create(['name' => 'admin', 'guard_name' => 'api']);
+        Role::create(['name' => 'learner', 'guard_name' => 'api']);
+        Role::create(['name' => 'instructor', 'guard_name' => 'api']);
         $this->command->info("Roles have been seeded completely.");
     }
 }

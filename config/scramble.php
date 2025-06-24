@@ -89,7 +89,7 @@ return [
      * ],
      */
     'servers' => [
-        'Local' => 'api',
+        'Local' => 'http://localhost:8000/api',
         'Prod' => env('APP_URL') . '/api',
     ],
 
@@ -109,13 +109,4 @@ return [
         // RestrictedDocsAccess::class,
     ],
     'extensions' => [],
-    'securitySchemes' => [
-        'BearerToken' => [
-            'type' => 'http',
-            'scheme' => 'bearer',
-        ],
-    ],
-    'security' => [
-        ['BearerToken' => []],
-    ],
 ];
