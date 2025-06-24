@@ -87,13 +87,10 @@ return [
      *     'Live' => 'api',
      *     'Prod' => 'https://scramble.dedoc.co/api',
      * ],
-     * ```
      */
     'servers' => [
-        [
-            'url' => 'https://fojo-backend-production.up.railway.app',
-            'description' => 'Production',
-        ],
+        'Local' => 'api',
+        'Prod' => env('APP_URL') . '/api',
     ],
 
     /**

@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\enums\UserRole;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\RegisterRequest;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 
 class RegisteredUserController extends Controller
 {
@@ -18,24 +16,17 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): Response
+    public function store(RegisterRequest $request): JsonResponse
     {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->string('password')),
-        ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return response()->noContent();
+        $data = $request->validated();
+        $user = User::create($data);
+        $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
+        // event(new Registered($user));
+        // $mailerService->sendVerificationEmail($user);
+        $request->authenticate();
+        $user = Auth::user();
+        $token = $user->createToken($user->email)->plainTextToken;
+        $data = ['token' => $token];
+        return $this->successResponse($data, 'Registration successful. A verification link has been sent to your email.', 201);
     }
 }
