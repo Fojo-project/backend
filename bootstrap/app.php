@@ -4,9 +4,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
-// use Spatie\Permission\Exceptions\UnauthorizedException;
-// use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-// use Illuminate\Auth\Access\AuthorizationException;
+use Spatie\Permission\Exceptions\UnauthorizedException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -28,29 +29,35 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
-            // 'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            // 'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            // 'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
 
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        // $exceptions->render(fn(UnauthorizedException $e, $request) => response()->json([
-        //     'success' => false,
-        //     'message' => $e->getMessage() ?: 'You are not authorized to access this resource.',
-        //     'data' => null,
-        // ], 403));
-    
-        // $exceptions->render(fn(AccessDeniedHttpException $e, $request) => response()->json([
-        //     'success' => false,
-        //     'message' => $e->getMessage() ?: 'You are not authorized to access this resource.',
-        //     'data' => null,
-        // ], 403));
-    
-        // $exceptions->render(fn(AuthorizationException $e, $request) => response()->json([
-        //     'success' => false,
-        //     'message' => $e->getMessage() ?: 'You are not authorized to access this resource.',
-        //     'data' => null,
-        // ], 403));
+        $exceptions->render(fn(UnauthorizedException $e, $request) => response()->json([
+            'success' => false,
+            'message' => $e->getMessage() ?: 'You are not authorized to access this resource.',
+            'data' => null,
+        ], 403));
+
+        $exceptions->render(fn(AccessDeniedHttpException $e, $request) => response()->json([
+            'success' => false,
+            'message' => $e->getMessage() ?: 'You are not authorized to access this resource.',
+            'data' => null,
+        ], 403));
+
+        $exceptions->render(fn(AuthorizationException $e, $request) => response()->json([
+            'success' => false,
+            'message' => $e->getMessage() ?: 'You are not authorized to access this resource.',
+            'data' => null,
+        ], 403));
+
+        $exceptions->render(fn(AuthenticationException $e, $request) => response()->json([
+            'success' => false,
+            'message' => $e->getMessage() ?: 'You are not authenticated',
+            'data' => null,
+        ], 401));
     })->create();
