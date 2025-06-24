@@ -108,6 +108,14 @@ return [
         // 'web',
         // RestrictedDocsAccess::class,
     ],
-
     'extensions' => [],
+    'securitySchemes' => [
+        'BearerToken' => [
+            'type' => 'http',
+            'scheme' => 'bearer',
+        ],
+    ],
+    'security' => [
+        ['BearerToken' => []],
+    ],
 ];
