@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Enums\Provider;
 use App\Traits\AuthenticatesUsersRequest;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class LoginRequest extends FormRequest
+class SocialAuthRequest extends FormRequest
 {
     use AuthenticatesUsersRequest;
     /**
@@ -24,8 +26,9 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
+            'provider' => ['required', 'string', Rule::in(array_column(Provider::cases(), 'value'))],
+            'full_name' => ['string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
         ];
     }
 }

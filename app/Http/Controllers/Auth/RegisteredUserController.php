@@ -25,7 +25,7 @@ class RegisteredUserController extends Controller
         // $mailerService->sendVerificationEmail($user);
         $request->authenticate();
         $user = Auth::user();
-        $token = $user->createToken($user->email)->plainTextToken;
+        $token = $user->createToken($user->email, [], now()->addMinutes(2))->plainTextToken;
         $data = ['token' => $token];
         return $this->successResponse($data, 'Registration successful. A verification link has been sent to your email.', 201);
     }
