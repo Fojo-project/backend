@@ -17,19 +17,19 @@ class SocialAuthController extends Controller
     public function handle(SocialAuthRequest $request, string $provider)
     {
         try {
-            // $user = User::where('email', $request->email)->first();
+            $data = $request->validated();
             $user = User::firstOrCreate(
-                ['email' => $request->email],
+                ['email' => $data['email']],
                 [
-                    'full_name' => $request->full_name,
+                    'full_name' => $data['full_name'],
                     'provider' => $provider,
                     'password' => Hash::make(Str::random(16)),
+                    'email_verified_at' => now(),
                 ]
             );
             $user->assignRole(UserRole::LEARNER->value);
-            $request->authenticateEmailOnly();
-            $user = Auth::user();
             $token = $user->createToken($user->email, [], now()->addMinutes(2))->plainTextToken;
+            $user = $request->authenticateEmailOnly($user);
             $data = ['token' => $token];
             return $this->successResponse($data, 'User was registered/logged in successfully', 201);
         } catch (\Exception $e) {

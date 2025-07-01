@@ -23,8 +23,7 @@ class RegisteredUserController extends Controller
         $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
         // event(new Registered($user));
         // $mailerService->sendVerificationEmail($user);
-        $request->authenticate();
-        $user = Auth::user();
+        $user = $request->authenticate();
         $token = $user->createToken($user->email, [], now()->addMinutes(2))->plainTextToken;
         $data = ['token' => $token];
         return $this->successResponse($data, 'Registration successful. A verification link has been sent to your email.', 201);

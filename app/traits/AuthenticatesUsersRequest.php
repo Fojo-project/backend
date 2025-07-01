@@ -16,37 +16,30 @@ trait AuthenticatesUsersRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
+    public function authenticate(): User
     {
         $this->ensureIsNotRateLimited();
-
         if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
-
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
         }
-
         RateLimiter::clear($this->throttleKey());
+        $user = Auth::user();
+        return $user;
     }
-    public function authenticateEmailOnly(): void
+    public function authenticateEmailOnly(User $user): User
     {
         $this->ensureIsNotRateLimited();
-        $user = User::where('email', $this->input('email'))->first();
         if (!$user) {
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
             ]);
         }
-        // Optional: Check if email is verified
-        // if (method_exists($user, 'hasVerifiedEmail') && !$user->hasVerifiedEmail()) {
-        //     throw ValidationException::withMessages([
-        //         'email' => 'Please verify your email first.',
-        //     ]);
-        // }
         RateLimiter::clear($this->throttleKey());
+        return $user;
     }
 
     /**
@@ -59,11 +52,8 @@ trait AuthenticatesUsersRequest
         if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
-
         event(new Lockout($this));
-
         $seconds = RateLimiter::availableIn($this->throttleKey());
-
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [
                 'seconds' => $seconds,
