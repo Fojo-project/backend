@@ -21,7 +21,11 @@ class RegisteredUserController extends Controller
     public function store(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $user = User::create([...$data, 'remember_token' => Hash::make($urlToken = Str::random(64))]);
+        $user = User::create([
+            ...$data,
+            'verification_token' => Hash::make($urlToken = Str::random(64)),
+            'verification_token_created_at' => now()
+        ]);
         $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
         $verifyUrl = config('app.frontend_url') . "/email-verification?token={$urlToken}&email=" . urlencode($user->email);
         // event(new Registered($user));

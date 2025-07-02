@@ -30,6 +30,8 @@ class User extends Authenticatable
         'provider',
         'remember_token',
         'email_verified_at',
+        'verification_token',
+        'verification_token_created_at',
     ];
 
     /**
@@ -40,7 +42,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'pivot'
+        'pivot',
+        'verification_token',
+        'verification_token_created_at',
     ];
 
     /**
@@ -53,6 +57,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'verification_token' => 'string',
+            'verification_token_created_at' => 'datetime',
             'role' => UserRole::class,
             'status' => Status::class,
         ];

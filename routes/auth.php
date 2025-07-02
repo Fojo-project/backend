@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -32,12 +31,10 @@ Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
 Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])->middleware('guest')
     ->name('social.auth');
 
-Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
-    ->middleware(['auth', 'signed', 'throttle:6,1'])
+Route::post('/verify-email/resend', [VerifyEmailController::class, 'resendVerification'])
+    ->middleware(['throttle:6,1'])
+    ->name('verify.resend');
+
+Route::post('/verify-email', [VerifyEmailController::class, 'verifyEmail'])
+    ->middleware(['throttle:6,1'])
     ->name('verification.verify');
-
-Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-    ->middleware(['auth', 'throttle:6,1'])
-    ->name('verification.send');
-
-
