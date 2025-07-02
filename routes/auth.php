@@ -25,6 +25,13 @@ Route::post('/reset-password', [NewPasswordController::class, 'store'])
     ->middleware('guest')
     ->name('password.store');
 
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth:sanctum')
+    ->name('logout');
+
+Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])->middleware('guest')
+    ->name('social.auth');
+
 Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
     ->middleware(['auth', 'signed', 'throttle:6,1'])
     ->name('verification.verify');
@@ -33,9 +40,4 @@ Route::post('/email/verification-notification', [EmailVerificationNotificationCo
     ->middleware(['auth', 'throttle:6,1'])
     ->name('verification.send');
 
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->middleware('auth:sanctum')
-    ->name('logout');
 
-Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])->middleware('guest')
-    ->name('social.auth');
