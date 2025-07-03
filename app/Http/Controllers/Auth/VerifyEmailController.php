@@ -20,6 +20,7 @@ class VerifyEmailController extends Controller
         $user = User::where('email', $data['email'])->firstOrFail();
         if ($user->hasVerifiedEmail()) {
             return $this->errorResponse(
+                null,
                 'Email already verified.',
                 400
             );
@@ -47,6 +48,7 @@ class VerifyEmailController extends Controller
 
         if ($user->hasVerifiedEmail()) {
             return $this->errorResponse(
+                null,
                 'Email already verified.',
                 400
             );
@@ -56,12 +58,13 @@ class VerifyEmailController extends Controller
         $tokenCreatedAt = $user->verification_token_created_at;
 
         if (!$tokenCreatedAt || Carbon::parse($tokenCreatedAt)->diffInMinutes(now()) > 60) {
-            return $this->errorResponse('Verification token expired.', 410);
+            return $this->errorResponse(null, 'Verification token expired.', 410);
         }
 
         // Check token match
         if (!Hash::check($data['token'], $user->verification_token)) {
             return $this->errorResponse(
+                null,
                 'Invalid verification token.',
                 400
             );

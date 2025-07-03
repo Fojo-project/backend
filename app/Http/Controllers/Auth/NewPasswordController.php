@@ -40,7 +40,7 @@ class NewPasswordController extends Controller
             }
         );
         return $status === \Illuminate\Support\Facades\Password::PASSWORD_RESET
-            ? $this->successResponse(NULL, __($status))
+            ? $this->successResponse(NULL, __($status), 201)
             : $this->errorResponse(NULL, __($status), 400);
     }
 }
