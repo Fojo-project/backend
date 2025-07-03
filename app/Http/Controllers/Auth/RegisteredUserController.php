@@ -20,18 +20,23 @@ class RegisteredUserController extends Controller
      */
     public function store(RegisterRequest $request): JsonResponse
     {
-        $data = $request->validated();
-        $user = User::create([
-            ...$data,
-            'verification_token' => Hash::make($urlToken = Str::random(64)),
-            'verification_token_created_at' => now()
-        ]);
-        $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
-        $request->authenticate();
-        $verifyUrl = config('app.frontend_url') . "/email-verification?token={$urlToken}&email=" . urlencode($user->email);
-        // $mailerService->sendVerificationEmail($user);
-        $token = $user->createToken($user->email)->plainTextToken;
-        $data = ['token' => $token, 'email_verification_url' => $verifyUrl];
-        return $this->successResponse($data, 'Registration successful. A verification link has been sent to your email.', 201);
+        try {
+            //code...
+            $data = $request->validated();
+            $user = User::create([
+                ...$data,
+                'verification_token' => Hash::make($urlToken = Str::random(64)),
+                'verification_token_created_at' => now()
+            ]);
+            $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
+            $request->authenticate();
+            $verifyUrl = config('app.frontend_url') . "/email-verification?token={$urlToken}&email=" . urlencode($user->email);
+            // $mailerService->sendVerificationEmail($user);
+            $token = $user->createToken($user->email)->plainTextToken;
+            $data = ['token' => $token, 'email_verification_url' => $verifyUrl];
+            return $this->successResponse($data, 'Registration successful. A verification link has been sent to your email.', 201);
+        } catch (\Exception $ex) {
+            return $this->errorResponse(null, $ex->getMessage(), 500);
+        }
     }
 }
