@@ -4,10 +4,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Support\Facades\Route;
-// use Spatie\Permission\Exceptions\UnauthorizedException;
-// use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-// use Illuminate\Auth\Access\AuthorizationException;
-// use Illuminate\Auth\AuthenticationException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -35,6 +31,12 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
     })->create();
+
+// use Spatie\Permission\Exceptions\UnauthorizedException;
+// use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+// use Illuminate\Auth\Access\AuthorizationException;
+// use Illuminate\Auth\AuthenticationException;
+
 // $cors = fn($request, $response) =>
 //     \Illuminate\Support\Facades\App::make(\Illuminate\Http\Middleware\HandleCors::class)
 //         ->handle($request, fn() => $response);
