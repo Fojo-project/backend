@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'guard' => ['web'],
+    'guard' => ['api'],
 
     /*
     |--------------------------------------------------------------------------
@@ -71,8 +71,8 @@ return [
     */
 
     'middleware' => [
-        'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
-        'encrypt_cookies' => Illuminate\Cookie\Middleware\EncryptCookies::class,
+        // 'authenticate_session' => Laravel\Sanctum\Http\Middleware\AuthenticateSession::class,
+        // 'encrypt_cookies' => Illuminate\Cookie\Middleware\EncryptCookies::class,
     ],
 
 ];
