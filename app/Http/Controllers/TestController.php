@@ -2,30 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 
-class ProfileController extends Controller
+class TestController extends Controller
 {
-    /**
-     * Display a authenticated user details.
-     */
-
-    public function getUserSession(Request $request)
-    {
-        // $user = $request->user();
-        // $data = new UserResource($user);
-        return $this->successResponse(env('FRONTEND_URL', 'http://localhost:3000'), 'User Details fetched successfully', 200);
-    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return $this->successResponse(env('FRONTEND_URL', 'http://localhost:3000'), 'User Details fetched successfully', 200);
     }
-
-
 
     /**
      * Store a newly created resource in storage.
