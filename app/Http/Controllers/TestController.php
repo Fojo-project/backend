@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
@@ -11,7 +12,8 @@ class TestController extends Controller
      */
     public function index()
     {
-        return $this->successResponse(env('FRONTEND_URL', 'http://localhost:3000'), 'User Details fetched successfully', 200);
+        $users = User::all();
+        return $this->successResponse($users, 'User Details fetched successfully', 200);
     }
 
     /**
