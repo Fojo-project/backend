@@ -27,11 +27,10 @@ class RegisteredUserController extends Controller
             'verification_token_created_at' => now()
         ]);
         $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
+        $request->authenticate();
         $verifyUrl = config('app.frontend_url') . "/email-verification?token={$urlToken}&email=" . urlencode($user->email);
-        // event(new Registered($user));
         // $mailerService->sendVerificationEmail($user);
-        $user = $request->authenticate();
-        $token = $user->createToken($user->email, [], now()->addMinutes(2))->plainTextToken;
+        $token = $user->createToken($user->email)->plainTextToken;
         $data = ['token' => $token, 'email_verification_url' => $verifyUrl];
         return $this->successResponse($data, 'Registration successful. A verification link has been sent to your email.', 201);
     }

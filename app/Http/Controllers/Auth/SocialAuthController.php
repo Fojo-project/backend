@@ -28,8 +28,8 @@ class SocialAuthController extends Controller
                 ]
             );
             $user->assignRole(UserRole::LEARNER->value);
-            $token = $user->createToken($user->email, [], now()->addMinutes(2))->plainTextToken;
-            $user = $request->authenticateEmailOnly($user);
+            $request->authenticateEmailOnly($user);
+            $token = $user->createToken($user->email)->plainTextToken;
             $data = ['token' => $token];
             return $this->successResponse($data, 'User was registered/logged in successfully', 201);
         } catch (\Exception $e) {

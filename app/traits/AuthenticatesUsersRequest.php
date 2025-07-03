@@ -16,7 +16,7 @@ trait AuthenticatesUsersRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): User
+    public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
         if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
@@ -26,10 +26,8 @@ trait AuthenticatesUsersRequest
             ]);
         }
         RateLimiter::clear($this->throttleKey());
-        $user = Auth::user();
-        return $user;
     }
-    public function authenticateEmailOnly(User $user): User
+    public function authenticateEmailOnly(User $user): void
     {
         $this->ensureIsNotRateLimited();
         if (!$user) {
@@ -39,7 +37,6 @@ trait AuthenticatesUsersRequest
             ]);
         }
         RateLimiter::clear($this->throttleKey());
-        return $user;
     }
 
     /**
@@ -52,7 +49,7 @@ trait AuthenticatesUsersRequest
         if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
-        event(new Lockout($this));
+        // event(new Lockout($this));
         $seconds = RateLimiter::availableIn($this->throttleKey());
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [

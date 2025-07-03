@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\Rules\Password;
+
 
 class NewPasswordController extends Controller
 {
@@ -30,7 +31,7 @@ class NewPasswordController extends Controller
                     ->uncompromised(),
             ],
         ]);
-        $status = Password::reset(
+        $status = \Illuminate\Support\Facades\Password::reset(
             $request->only('email', 'token', 'password', 'password_confirmation'),
             function ($user) use ($request) {
                 $user->forceFill([
@@ -38,7 +39,7 @@ class NewPasswordController extends Controller
                 ])->save();
             }
         );
-        return $status === Password::PASSWORD_RESET
+        return $status === \Illuminate\Support\Facades\Password::PASSWORD_RESET
             ? $this->successResponse(NULL, __($status))
             : $this->errorResponse(NULL, __($status), 400);
     }

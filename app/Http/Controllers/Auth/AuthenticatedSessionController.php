@@ -15,7 +15,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): JsonResponse
     {
-        $user = $request->authenticate();
+        $request->authenticate();
+        $user = Auth::user();
         $token = $user->createToken($user->email)->plainTextToken;
         $data = ['token' => $token];
         return $this->successResponse($data, 'Logged in successfully', 200);
