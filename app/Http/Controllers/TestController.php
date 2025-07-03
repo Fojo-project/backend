@@ -21,7 +21,13 @@ class TestController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+        $user = User::create([
+            'full_name' => $request->input('full_name'),
+            'email' => $request->input('email'),
+            'password' => bcrypt($request->input('password')),
+        ]);
+        return $this->successResponse($user, 'User Details saved successfully', 201);
     }
 
     /**

@@ -13,9 +13,9 @@ class ProfileController extends Controller
 
     public function getUserSession(Request $request)
     {
-        // $user = $request->user();
-        // $data = new UserResource($user);
-        return $this->successResponse(env('FRONTEND_URL', 'http://localhost:3000'), 'User Details fetched successfully', 200);
+        $user = $request->user();
+        $data = new UserResource($user);
+        return $this->successResponse($data, 'User Details fetched successfully', 200);
     }
     /**
      * Display a listing of the resource.

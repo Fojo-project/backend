@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 require __DIR__ . '/auth.php';
 
-
+Route::get('/ping', fn() => response()->json(['pong' => true]));
 Route::middleware(['guest'])->group(function () {
-    Route::get('/test', [TestController::class, 'index']);
+    Route::apiResource('/test', TestController::class);
 });
 Route::middleware(['auth:sanctum'])->group(function () {
     //dashboard
