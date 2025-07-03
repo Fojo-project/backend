@@ -90,7 +90,7 @@ return [
      */
     'servers' => [
         'Local' => 'http://localhost:8000/api',
-        'Prod' => 'https://fojo-backend-production.up.railway.app/api',
+        'Prod' => env('APP_URL') . '/api',
     ],
 
     /**
