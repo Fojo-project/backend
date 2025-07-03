@@ -15,12 +15,12 @@ return [
     |
     */
 
-    'paths' => ['*'],
+    'paths' => ['api/*'],
 
     'allowed_methods' => ['*'],
 
     'allowed_origins' => ['*'],
-    // 'allowed_origins' => ['*', 'http://localhost:3000', 'https://fojo-frontend-production.up.railway.app', 'https://www.fojo-frontend-production.up.railway.app'],
+    // 'allowed_origins' => [env('FRONTEND_URL'), 'http://localhost:3000'],
 
     'allowed_origins_patterns' => [],
 
