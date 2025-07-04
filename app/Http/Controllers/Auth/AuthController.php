@@ -96,6 +96,8 @@ class AuthController extends Controller
                 $user->forceFill([
                     'password' => Hash::make($request->password),
                 ])->save();
+
+                $user?->tokens()?->delete();
             }
         );
         return $status === \Illuminate\Support\Facades\Password::PASSWORD_RESET
@@ -136,9 +138,13 @@ class AuthController extends Controller
         $user->save();
 
         $verifyUrl = config('app.frontend_url') . "/email-verification?token={$rawToken}&email=" . urlencode($user->email);
-        // $mailerService->sendVerificationEmail($user);
+        SendEmailVerificationJob::dispatch($user->full_name, $user->email, $verifyUrl)
+            ->delay(now()->addSeconds(5));
+        // Mail::to($user->email)->send(
+        //     new EmailVerificationMail($user->full_name, $verifyUrl)
+        // );
         $data = ['email_verification_url' => $verifyUrl];
-        return $this->successResponse($data, 'A verification link has been resent to your email.', 201);
+        return $this->successResponse(null, 'A verification link has been resent to your email.', 201);
     }
     public function verifyEmail(Request $request)
     {
