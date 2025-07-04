@@ -1,52 +1,40 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
-use App\Http\Controllers\auth\SocialAuthController;
+use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestController;
-use Illuminate\Support\Facades\Route;
 
+// Guest Routes
+Route::middleware('guest')->group(function () {
+    Route::controller(AuthController::class)->group(function () {
+        Route::post('/register', 'register')->name('register');
+        Route::post('/login', 'login')->name('login');
+        Route::post('/forgot-password', 'sendPasswordResetLink')->name('password.email');
+        Route::post('/reset-password', 'resetPassword')->name('password.store');
+        Route::post('/verify-email', 'verifyEmail')
+            ->middleware('throttle:6,1')
+            ->name('verification.verify');
+        Route::post('/verify-email/resend', 'resendVerification')
+            ->middleware('throttle:6,1')
+            ->name('verify.resend');
+    });
 
-Route::get('/ping', fn() => response()->json(['pong' => true]));
+    Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])
+        ->name('social.auth');
 
-Route::post('/register', [AuthController::class, 'register'])
-    ->middleware('guest')
-    ->name('register');
-
-Route::post('/login', [AuthController::class, 'login'])
-    ->middleware('guest')
-    ->name('login');
-
-Route::post('/forgot-password', [AuthController::class, 'sendPasswordResetLink'])
-    ->middleware('guest')
-    ->name('password.email');
-
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])
-    ->middleware('guest')
-    ->name('password.store');
-
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->middleware('auth:sanctum')
-    ->name('logout');
-
-Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])->middleware('guest')
-    ->name('social.auth');
-
-Route::post('/verify-email/resend', [AuthController::class, 'resendVerification'])
-    ->middleware(['throttle:6,1'])
-    ->name('verify.resend');
-
-Route::post('/verify-email', [AuthController::class, 'verifyEmail'])
-    ->middleware(['throttle:6,1'])
-    ->name('verification.verify');
-
-Route::middleware(['guest'])->group(function () {
     Route::apiResource('/test', TestController::class);
 });
-Route::middleware(['auth:sanctum'])->group(function () {
-    //dashboard
-    // Route::get('/dashboard', [DashboardController::class, 'dashboard']);
-    //user
-    Route::get('/me', [ProfileController::class, 'getUserSession']);
-});
 
+// Authenticated Routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::controller(ProfileController::class)->group(function () {
+        Route::get('/me', 'getUserSession');
+    });
+
+    // Example placeholder for future routes
+    // Route::get('/dashboard', [DashboardController::class, 'dashboard']);
+});
