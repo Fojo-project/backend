@@ -122,11 +122,7 @@ class AuthController extends Controller
         $user = User::where('email', $data['email'])->firstOrFail();
 
         if ($user->hasVerifiedEmail()) {
-            return $this->errorResponse(
-                null,
-                'Email already verified.',
-                400
-            );
+            return $this->successResponse(null, 'Email has already verified.', 200);
         }
 
         // Check token validity (1-hour timeout)
@@ -138,11 +134,7 @@ class AuthController extends Controller
 
         // Check token match
         if (!Hash::check($data['token'], $user->verification_token)) {
-            return $this->errorResponse(
-                null,
-                'Invalid verification token.',
-                400
-            );
+            return $this->errorResponse(null, 'Invalid verification token.', 400);
         }
 
         // Mark email as verified
@@ -151,11 +143,7 @@ class AuthController extends Controller
         $user->verification_token = null;
         $user->save();
 
-        return $this->successResponse(
-            null,
-            'Email verified successfully.',
-            200
-        );
+        return $this->successResponse('Email verified successfully.', 200);
     }
 
     public function logout(Request $request): JsonResponse

@@ -13,16 +13,10 @@ Route::middleware('guest')->group(function () {
         Route::post('/login', 'login')->name('login');
         Route::post('/forgot-password', 'sendPasswordResetLink')->name('password.email');
         Route::post('/reset-password', 'resetPassword')->name('password.store');
-        Route::post('/verify-email', 'verifyEmail')
-            ->middleware('throttle:6,1')
-            ->name('verification.verify');
-        Route::post('/verify-email/resend', 'resendVerification')
-            ->middleware('throttle:6,1')
-            ->name('verify.resend');
+        Route::post('/verify-email', 'verifyEmail')->middleware('throttle:6,1')->name('verification.verify');
+        Route::post('/verify-email/resend', 'resendVerification')->middleware('throttle:6,1')->name('verify.resend');
     });
-
-    Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])
-        ->name('social.auth');
+    Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])->name('social.auth');
 
     Route::apiResource('/test', TestController::class);
 });
