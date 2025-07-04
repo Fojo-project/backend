@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Jobs\SendEmailVerificationJob;
+use App\Jobs\SendResetPasswordMailJob;
 use App\Mail\EmailVerificationMail;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -113,6 +114,11 @@ class AuthController extends Controller
         $user = User::where('email', $request->input('email'))->firstOrFail();
         $token = \Illuminate\Support\Facades\Password::createToken($user);
         $frontendUrl = config('app.frontend_url') . "/reset-password?token={$token}&email=" . urlencode($user->email);
+        SendResetPasswordMailJob::dispatch($user->full_name, $user->email, $frontendUrl)
+            ->delay(now()->addSeconds(5));
+        // Mail::to($user->email)->send(
+        //     new EmailVerificationMail($user->full_name, $verifyUrl)
+        // );
         return $this->successResponse(
             $frontendUrl,
             'Password reset link generated.',
