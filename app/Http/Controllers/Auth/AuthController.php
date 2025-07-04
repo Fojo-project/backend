@@ -6,12 +6,16 @@ use App\Enums\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\Auth\RegisterRequest;
+use App\Jobs\SendEmailVerificationJob;
+use App\Mail\EmailVerificationMail;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
@@ -26,21 +30,52 @@ class AuthController extends Controller
         return $this->successResponse($data, 'Logged in successfully', 200);
     }
 
-    public function register(RegisterRequest $request): JsonResponse
+    public function register(RegisterRequest $request)
     {
         $data = $request->validated();
-        $user = User::create([
-            ...$data,
-            'verification_token' => Hash::make($urlToken = Str::random(64)),
-            'verification_token_created_at' => now()
-        ]);
-        $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
-        $request->authenticate();
-        $verifyUrl = config('app.frontend_url') . "/email-verification?token={$urlToken}&email=" . urlencode($user->email);
-        // $mailerService->sendVerificationEmail($user);
-        $token = $user->createToken($user->email)->plainTextToken;
-        $data = ['token' => $token, 'email_verification_url' => $verifyUrl];
-        return $this->successResponse($data, 'Registration successful. A verification link has been sent to your email.', 201);
+
+        $verificationToken = Str::random(64);
+        $verifyUrl = sprintf(
+            '%s/email-verification?token=%s&email=%s',
+            rtrim(config('app.frontend_url'), '/'),
+            $verificationToken,
+            urlencode($data['email'])
+        );
+
+        DB::beginTransaction();
+
+        try {
+            $user = User::create([
+                ...$data,
+                'verification_token' => Hash::make($verificationToken),
+                'verification_token_created_at' => now(),
+            ]);
+
+            $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
+
+            // Authenticate user AFTER creation
+            $request->authenticate();
+
+            // Send email verification (queued for performance if ShouldQueue is implemented)
+            SendEmailVerificationJob::dispatch($user->full_name, $user->email, $verifyUrl)
+                ->delay(now()->addSeconds(5));
+            // Mail::to($user->email)->send(
+            //     new EmailVerificationMail($user->full_name, $verifyUrl)
+            // );
+
+            // Generate personal access token
+            $token = $user->createToken($user->email)->plainTextToken;
+
+            DB::commit();
+
+            return $this->successResponse([
+                'token' => $token,
+            ], 'Registration successful. A verification link has been sent to your email.', 201);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return $this->errorResponse(null, 'Registration failed. Please try again later.', 500);
+        }
     }
 
     public function resetPassword(Request $request): JsonResponse
@@ -85,8 +120,6 @@ class AuthController extends Controller
             'Password reset link generated.',
         );
     }
-
-
     public function resendVerification(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -111,7 +144,6 @@ class AuthController extends Controller
         $data = ['email_verification_url' => $verifyUrl];
         return $this->successResponse($data, 'A verification link has been resent to your email.', 201);
     }
-
     public function verifyEmail(Request $request)
     {
         $data = $request->validate([
@@ -125,7 +157,6 @@ class AuthController extends Controller
             return $this->successResponse(null, 'Email has already verified.', 200);
         }
 
-        // Check token validity (1-hour timeout)
         $tokenCreatedAt = $user->verification_token_created_at;
 
         if (!$tokenCreatedAt || Carbon::parse($tokenCreatedAt)->diffInMinutes(now()) > 60) {
@@ -143,7 +174,7 @@ class AuthController extends Controller
         $user->verification_token = null;
         $user->save();
 
-        return $this->successResponse('Email verified successfully.', 200);
+        return $this->successResponse(null, 'Your email has been verified successfully.', 200);
     }
 
     public function logout(Request $request): JsonResponse
