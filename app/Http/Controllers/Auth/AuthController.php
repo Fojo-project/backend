@@ -53,19 +53,15 @@ class AuthController extends Controller
 
             $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
 
-            // Authenticate user AFTER creation
             $request->authenticate();
 
-            // Send email verification (queued for performance if ShouldQueue is implemented)
             SendEmailVerificationJob::dispatch($user->full_name, $user->email, $verifyUrl)
                 ->delay(now()->addSeconds(5));
             // Mail::to($user->email)->send(
             //     new EmailVerificationMail($user->full_name, $verifyUrl)
             // );
 
-            // Generate personal access token
             $token = $user->createToken($user->email)->plainTextToken;
-
             DB::commit();
 
             return $this->successResponse([
