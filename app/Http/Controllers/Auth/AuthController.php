@@ -24,7 +24,6 @@ class AuthController extends Controller
         $token = $user->createToken($user->email)->plainTextToken;
         $data = ['token' => $token];
         return $this->successResponse($data, 'Logged in successfully', 200);
-
     }
 
     public function register(RegisterRequest $request): JsonResponse
