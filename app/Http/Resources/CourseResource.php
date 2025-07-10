@@ -21,6 +21,7 @@ class CourseResource extends JsonResource
             'description' => $this->description,
             'about_course' => $this->about_course,
             'course_video' => $this->course_video,
+            'course_image' => $this->course_image,
             'course_text' => $this->course_text,
             'color_code' => $this->color_code,
             // 'lessons' => LessonResource::collection($this->whenLoaded('lessons')),

@@ -11,7 +11,7 @@ class UpdateCourseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class UpdateCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => 'required|string|in:foundations,discipleship,ministry,leadership',
+            'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'about_course' => 'nullable|string',
+            'course_video' => 'nullable|url',
+            'course_image' => 'nullable|url',
+            'course_text' => 'nullable|string',
+            'color_code' => 'nullable|string|regex:/^#[A-Fa-f0-9]{6}$/',
         ];
     }
 }

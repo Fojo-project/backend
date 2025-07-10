@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->text('about_course')->nullable();
             $table->string('course_video')->nullable(); // could be URL
+            $table->string('course_image')->nullable(); // could be URL
             $table->longText('course_text')->nullable();
             $table->string('color_code')->nullable(); // e.g., #683504
             $table->softDeletes(); // for soft deletion

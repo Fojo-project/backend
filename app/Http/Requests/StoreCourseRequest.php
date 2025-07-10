@@ -27,6 +27,7 @@ class StoreCourseRequest extends FormRequest
             'description' => 'nullable|string',
             'about_course' => 'nullable|string',
             'course_video' => 'nullable|url',
+            'course_image' => 'nullable|url',
             'course_text' => 'nullable|string',
             'color_code' => 'nullable|string|regex:/^#[A-Fa-f0-9]{6}$/',
         ];

@@ -37,6 +37,7 @@ class CourseFactory extends Factory
                 'https://www.youtube.com/watch?v=Zi_XLOBDo_Y',
                 'https://www.youtube.com/watch?v=kXYiU_JCYtU',
             ]),
+            'course_image' => $this->faker->imageUrl(800, 600, 'education', true, 'Lesson'),
             'course_text' => $this->faker->text(600),
             'color_code' => '#683504',
         ];

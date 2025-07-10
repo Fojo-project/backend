@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class CourseController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the all courses
      */
     public function index()
     {
@@ -20,7 +20,7 @@ class CourseController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created course.
      */
     public function store(StoreCourseRequest $request)
     {
@@ -29,7 +29,7 @@ class CourseController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified course resource.
      */
     public function show(Course $course)
     {
@@ -38,7 +38,7 @@ class CourseController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified course resource in storage.
      */
     public function update(UpdateCourseRequest $request, Course $course)
     {
@@ -47,13 +47,16 @@ class CourseController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified course resource from storage.
      */
     public function destroy(Course $course)
     {
         $course->delete();
         return $this->successResponse(null, 'Course deleted successfully', 204);
     }
+    /**
+     * User start a specified course resource.
+     */
     public function startCourse(Request $request, Course $course)
     {
         $user = $request->user();
@@ -62,15 +65,24 @@ class CourseController extends Controller
                 'started_at' => now(),
                 'completed' => false,
             ]);
+            return $this->successResponse($course, 'Course started successfully.', 201);
+        } else {
+            return $this->errorResponse(null, 'You have already started this course.', 400);
         }
-        return $this->successResponse($course, 'Course started successfully.', 201);
     }
+    /**
+     * User mark a specified course resource as completed.
+     */
     public function markCourseCompleted(Request $request, Course $course)
     {
         $user = $request->user();
         $user->userCourses()->updateExistingPivot($course->id, ['completed' => true]);
         return $this->successResponse(null, 'Course marked as completed.');
     }
+    /**
+     * Get user started courses with lessons.
+     * This method retrieves all courses that the user has started, including their lessons.
+     */
     public function getUserCourses(Request $request)
     {
         $courses = $request->user()->userCourses()->with('lessons')->get();

@@ -26,6 +26,7 @@ class Course extends Model
         'description',
         'about_course',
         'course_video',
+        'course_image',
         'course_text',
         'color_code',
     ];
