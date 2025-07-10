@@ -20,28 +20,28 @@ class CourseSeeder extends Seeder
                 'color_code' => '#683504',
                 'description' => 'Start your journey with core teachings on salvation, prayer, and Scripture.',
                 'lesson_count' => 13,
-                "course_image" => public_path("images/foundations.jpg")
+                "course_image" => "/images/course/foundations.jpg"
             ],
             [
                 'title' => 'discipleship',
                 'color_code' => '#106C19',
                 'description' => 'Learn to follow Jesus daily with obedience and intimacy.',
                 'lesson_count' => 15,
-                "course_image" => public_path("images/discipleship.jpg")
+                "course_image" => "/images/course/discipleship.jpg"
             ],
             [
                 'title' => 'ministry',
                 'color_code' => '#651DC3',
                 'description' => 'Discover your calling and how to serve effectively in the body of Christ.',
                 'lesson_count' => 20,
-                "course_image" => public_path("images/ministry.jpg")
+                "course_image" => "/images/course/ministry.jpg"
             ],
             [
                 'title' => 'leadership',
                 'color_code' => '#AF7719',
                 'description' => 'Grow into a Christ-centered leader — humble, bold, and Spirit-led.',
                 'lesson_count' => 10,
-                "course_image" => public_path("images/leadership.jpg")
+                "course_image" => "/images/course/leadership.jpg"
             ],
         ];
 
