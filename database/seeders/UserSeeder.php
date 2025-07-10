@@ -16,8 +16,17 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        $user1 = User::factory()->create([
+        $user = User::factory()->create([
             'full_name' => 'User One',
+            'email' => 'user@example.com',
+            'password' => \Hash::make('string'),
+            'verification_token' => \Hash::make(Str::random(64)),
+            'verification_token_created_at' => now(),
+        ]);
+        $user->assignRole(UserRole::LEARNER->value);
+
+        $user1 = User::factory()->create([
+            'full_name' => 'User Two',
             'email' => 'user1@gmail.com',
             'password' => \Hash::make('password'),
             'verification_token' => \Hash::make(Str::random(64)),
@@ -26,7 +35,7 @@ class UserSeeder extends Seeder
         $user1->assignRole(UserRole::LEARNER->value);
 
         $user2 = User::factory()->create([
-            'full_name' => 'User Two',
+            'full_name' => 'User Three',
             'email' => 'user2@gmail.com',
             'password' => \Hash::make('password'),
             'verification_token' => \Hash::make(Str::random(64)),
@@ -35,6 +44,11 @@ class UserSeeder extends Seeder
         $user2->assignRole(UserRole::LEARNER->value);
         // Get random courses
         $courses = Course::inRandomOrder()->take(4)->pluck('id');
+
+        $user->enrolledCourses()->attach($courses->slice(0, 2), [
+            'started_at' => now(),
+            'completed' => false,
+        ]);
         // Attach 2 random courses to user1
         $user1->enrolledCourses()->attach($courses->slice(0, 2), [
             'started_at' => now(),
