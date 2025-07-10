@@ -26,6 +26,9 @@ class CourseResource extends JsonResource
                 ->where('course_id', $this->id)
                 ->count();
         }
+        $totalDuration = $this->whenLoaded('lessons')
+            ? $this->lessons->sum('lessons_duration')
+            : 0;
 
         return [
             'id' => $this->id,
@@ -38,12 +41,8 @@ class CourseResource extends JsonResource
             'course_image' => $this->course_image,
             'course_text' => $this->course_text,
             'color_code' => $this->color_code,
-            'created_at' => $this->created_at,
-
-            // Lesson info
             'lessons' => LessonResource::collection($lessons),
             'lesson_count' => $lessons->count(),
-            // Progress tracking
             'lesson_progress' => [
                 'total_lessons' => $totalLessons,
                 'completed_lessons' => $completedLessonCount,
@@ -51,10 +50,11 @@ class CourseResource extends JsonResource
                     ? round(($completedLessonCount / $totalLessons) * 100, 1)
                     : 0,
             ],
-            // Enrollment status
+            'total_lessons_duration' => $totalDuration,
             'isStarted' => $user
                 ? $this->enrolledUsers->contains($user->id)
                 : false,
+            'created_at' => $this->created_at,
         ];
     }
 }

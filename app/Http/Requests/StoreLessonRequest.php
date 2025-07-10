@@ -24,6 +24,7 @@ class StoreLessonRequest extends FormRequest
         return [
             'course_id' => 'required|exists:courses,id',
             'lesson_order' => 'required|integer|min:1',
+            'video_duration' => 'nullable|integer|min:1',
             'title' => 'required|string',
             'slug' => 'required|string',
             'subtitle' => 'nullable|string',
