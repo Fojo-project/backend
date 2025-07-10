@@ -51,4 +51,24 @@ class Lesson extends Model
             ->withPivot(['completed', 'completed_at'])
             ->withTimestamps();
     }
+    public function nextLessons($count = 4)
+    {
+        return self::where('course_id', $this->course_id)
+            ->where('lesson_order', '>', $this->lesson_order)
+            ->orderBy('lesson_order')
+            ->limit($count)
+            ->get();
+    }
+
+    public function previousLessons($count = 4)
+    {
+        return self::where('course_id', $this->course_id)
+            ->where('lesson_order', '<', $this->lesson_order)
+            ->orderByDesc('lesson_order')
+            ->limit($count)
+            ->get()
+            ->reverse()
+            ->values();
+    }
+
 }

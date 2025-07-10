@@ -29,7 +29,14 @@ class LessonController extends Controller
      */
     public function show(Lesson $lesson)
     {
-        return $this->successResponse(new LessonResource($lesson), 'Lesson fetched successfully');
+        $lesson->load('course');
+        $previousLessons = $lesson->previousLessons();
+        $nextLessons = $lesson->nextLessons();
+        return $this->successResponse([
+            'lesson' => new LessonResource($lesson),
+            'previous_lessons' => LessonResource::collection($previousLessons),
+            'next_lessons' => LessonResource::collection($nextLessons),
+        ], 'Lesson retrieved successfully');
     }
     /**
      * Update a lesson resource.
