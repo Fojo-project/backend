@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseLessonController;
+use App\Http\Controllers\LessonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -18,6 +21,10 @@ Route::middleware('guest')->group(function () {
     });
     Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])->name('social.auth');
 
+    Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
+    Route::apiResource('lessons', LessonController::class)->only(['index', 'show']);
+    Route::apiResource('courses.lessons', CourseLessonController::class)->only(['index']);
+
     Route::apiResource('/test', TestController::class);
 });
 
@@ -28,6 +35,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/me', 'getUserSession');
     });
+    Route::apiResource('courses', CourseController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('lessons', LessonController::class)->only(['store', 'update', 'destroy']);
+
+    Route::apiResource('courses.lessons', CourseLessonController::class)->only(['store']);
 
     // Example placeholder for future routes
     // Route::get('/dashboard', [DashboardController::class, 'dashboard']);

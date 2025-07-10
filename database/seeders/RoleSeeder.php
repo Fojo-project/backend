@@ -18,6 +18,5 @@ class RoleSeeder extends Seeder
         Role::create(['name' => 'admin', 'guard_name' => 'api']);
         Role::create(['name' => 'learner', 'guard_name' => 'api']);
         Role::create(['name' => 'instructor', 'guard_name' => 'api']);
-        $this->command->info("Roles have been seeded completely.");
     }
 }
