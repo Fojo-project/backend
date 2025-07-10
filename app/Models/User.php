@@ -63,4 +63,10 @@ class User extends Authenticatable
             'status' => Status::class,
         ];
     }
+    public function userCourses()
+    {
+        return $this->belongsToMany(Course::class, 'course_user')
+            ->withTimestamps()
+            ->withPivot(['started_at', 'completed']);
+    }
 }

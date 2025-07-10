@@ -23,7 +23,7 @@ class CourseResource extends JsonResource
             'course_video' => $this->course_video,
             'course_text' => $this->course_text,
             'color_code' => $this->color_code,
-            'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
+            // 'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
             'lesson_count' => $this->whenLoaded('lessons', fn() => $this->lessons->count()),
             'created_at' => $this->created_at,
         ];

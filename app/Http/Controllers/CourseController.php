@@ -54,4 +54,30 @@ class CourseController extends Controller
         $course->delete();
         return $this->successResponse(null, 'Course deleted successfully', 204);
     }
+    public function startCourse(Request $request, Course $course)
+    {
+        $user = $request->user();
+        if (!$user->userCourses()->where('course_id', $course->id)->exists()) {
+            $user->userCourses()->attach($course->id, [
+                'started_at' => now(),
+                'completed' => false,
+            ]);
+        }
+        return $this->successResponse($course, 'Course started successfully.', 201);
+    }
+    public function markCourseCompleted(Request $request, Course $course)
+    {
+        $user = $request->user();
+        $user->userCourses()->updateExistingPivot($course->id, ['completed' => true]);
+        return $this->successResponse(null, 'Course marked as completed.');
+    }
+    public function getUserCourses(Request $request)
+    {
+        $courses = $request->user()->userCourses()->with('lessons')->get();
+        return $this->successResponse(
+            CourseResource::collection($courses),
+            'Your started courses fetched successfully.',
+            200
+        );
+    }
 }

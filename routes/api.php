@@ -35,9 +35,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/me', 'getUserSession');
     });
-    Route::apiResource('courses', CourseController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('lessons', LessonController::class)->only(['store', 'update', 'destroy']);
-
+    // course
+    Route::get('courses/user/course', [CourseController::class, 'getUserCourses']);
+    Route::post('/courses/{course}/start', [CourseController::class, 'startCourse']);
+    Route::post('/courses/{course}/complete', [CourseController::class, 'markCourseCompleted']);
+    Route::apiResource('courses', CourseController::class)->only(['store', 'update', 'destroy']);
     Route::apiResource('courses.lessons', CourseLessonController::class)->only(['store']);
 
     // Example placeholder for future routes

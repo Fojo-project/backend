@@ -33,4 +33,10 @@ class Course extends Model
     {
         return $this->hasMany(Lesson::class);
     }
+    public function startedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'course_user')
+            ->withTimestamps()
+            ->withPivot(['started_at', 'completed']);
+    }
 }
