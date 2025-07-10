@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -14,6 +15,18 @@ class CourseResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = $request->user();
+        $lessons = $this->relationLoaded('lessons') ? $this->lessons : collect();
+        $totalLessons = $lessons->count();
+
+        $completedLessonCount = 0;
+
+        if ($user && $totalLessons > 0) {
+            $completedLessonCount = $user->completedLessons()
+                ->where('course_id', $this->id)
+                ->count();
+        }
+
         return [
             'id' => $this->id,
             'title' => $this->title,
@@ -25,12 +38,23 @@ class CourseResource extends JsonResource
             'course_image' => $this->course_image,
             'course_text' => $this->course_text,
             'color_code' => $this->color_code,
-            'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
-            'lesson_count' => $this->whenLoaded('lessons', fn() => $this->lessons->count()),
-            'isStarted' => auth()->check()
-                ? $this->enrolledUsers->contains(auth()->id())
-                : false,
             'created_at' => $this->created_at,
+
+            // Lesson info
+            'lessons' => LessonResource::collection($lessons),
+            'lesson_count' => $lessons->count(),
+            // Progress tracking
+            'lesson_progress' => [
+                'total_lessons' => $totalLessons,
+                'completed_lessons' => $completedLessonCount,
+                'percentage_completed' => $totalLessons > 0
+                    ? round(($completedLessonCount / $totalLessons) * 100, 1)
+                    : 0,
+            ],
+            // Enrollment status
+            'isStarted' => $user
+                ? $this->enrolledUsers->contains($user->id)
+                : false,
         ];
     }
 }

@@ -31,18 +31,17 @@ Route::middleware('guest')->group(function () {
 // Authenticated Routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
+    // profile
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/me', 'getUserSession');
     });
+    // lessons
     Route::apiResource('lessons', LessonController::class)->only(['store', 'update', 'destroy']);
+    Route::post('/lessons/{lesson}/complete', [LessonController::class, 'markLessonAsCompleted']);
     // course
     Route::get('courses/user/course', [CourseController::class, 'getUserEnrolledCourses']);
     Route::post('/courses/{course}/start', [CourseController::class, 'enrollInCourse']);
     Route::post('/courses/{course}/complete', [CourseController::class, 'markCourseCompleted']);
     Route::apiResource('courses', CourseController::class);
     Route::apiResource('courses.lessons', CourseLessonController::class)->only(['store']);
-
-    // Example placeholder for future routes
-    // Route::get('/dashboard', [DashboardController::class, 'dashboard']);
 });
