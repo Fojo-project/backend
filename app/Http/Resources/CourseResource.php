@@ -17,6 +17,7 @@ class CourseResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'slug' => $this->slug,
             'subtitle' => $this->subtitle,
             'description' => $this->description,
             'about_course' => $this->about_course,
@@ -26,6 +27,9 @@ class CourseResource extends JsonResource
             'color_code' => $this->color_code,
             // 'lessons' => LessonResource::collection($this->whenLoaded('lessons')),
             'lesson_count' => $this->whenLoaded('lessons', fn() => $this->lessons->count()),
+            'isStarted' => auth()->check()
+                ? $this->enrolledUsers->contains(auth()->id())
+                : false,
             'created_at' => $this->created_at,
         ];
     }

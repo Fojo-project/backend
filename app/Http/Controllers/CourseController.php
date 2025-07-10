@@ -15,6 +15,16 @@ class CourseController extends Controller
      */
     public function index()
     {
+        $courses = Course::with(['lessons', 'enrolledUsers'])->paginate(10);
+        $courses = Course::with('lessons')->orderBy('id', 'asc')->paginate(10);
+        return $this->successResponse(CourseResource::collection($courses), 'All courses retrieved successfully.', 200);
+    }
+    /**
+     * Fetch all courses (Homepage)
+     */
+    public function getAllCourses()
+    {
+        $courses = Course::with(['lessons', 'enrolledUsers'])->paginate(10);
         $courses = Course::with('lessons')->orderBy('id', 'asc')->paginate(10);
         return $this->successResponse(CourseResource::collection($courses), 'All courses retrieved successfully.', 200);
     }
@@ -57,17 +67,14 @@ class CourseController extends Controller
     /**
      * User start a specified course resource.
      */
-    public function startCourse(Request $request, Course $course)
+    public function enrollInCourse(Request $request, Course $course)
     {
         $user = $request->user();
-        if (!$user->userCourses()->where('course_id', $course->id)->exists()) {
-            $user->userCourses()->attach($course->id, [
-                'started_at' => now(),
-                'completed' => false,
-            ]);
-            return $this->successResponse($course, 'Course started successfully.', 201);
+        if (!$user->enrolledCourses()->where('course_id', $course->id)->exists()) {
+            $user->enrolledCourses()->attach($course->id, ['started_at' => now(), 'completed' => false]);
+            return $this->successResponse($course, 'You have enrolled in this course succesfully.', 201);
         } else {
-            return $this->errorResponse(null, 'You have already started this course.', 400);
+            return $this->errorResponse(null, 'You have already enrolled in this course.', 400);
         }
     }
     /**
@@ -76,16 +83,16 @@ class CourseController extends Controller
     public function markCourseCompleted(Request $request, Course $course)
     {
         $user = $request->user();
-        $user->userCourses()->updateExistingPivot($course->id, ['completed' => true]);
+        $user->enrolledCourses()->updateExistingPivot($course->id, ['completed' => true]);
         return $this->successResponse(null, 'Course marked as completed.');
     }
     /**
      * Get user started courses with lessons.
      * This method retrieves all courses that the user has started, including their lessons.
      */
-    public function getUserCourses(Request $request)
+    public function getUserEnrolledCourses(Request $request)
     {
-        $courses = $request->user()->userCourses()->with('lessons')->get();
+        $courses = $request->user()->enrolledCourses()->with('lessons')->get();
         return $this->successResponse(
             CourseResource::collection($courses),
             'Your started courses fetched successfully.',

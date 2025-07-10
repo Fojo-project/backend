@@ -22,6 +22,7 @@ class Course extends Model
     use HasFactory;
     protected $fillable = [
         'title',
+        'slug',
         'subtitle',
         'description',
         'about_course',
@@ -30,11 +31,15 @@ class Course extends Model
         'course_text',
         'color_code',
     ];
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
     public function lessons()
     {
         return $this->hasMany(Lesson::class);
     }
-    public function startedByUsers()
+    public function enrolledUsers()
     {
         return $this->belongsToMany(User::class, 'course_user')
             ->withTimestamps()

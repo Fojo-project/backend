@@ -27,6 +27,7 @@ class CourseFactory extends Factory
 
         return [
             'title' => 'foundations', // default, overridden in seeder
+            'slug' => 'foundations', // default, overridden in seeder
             'subtitle' => $this->faker->sentence,
             'description' => null,
             'about_course' => $this->faker->paragraph(50),

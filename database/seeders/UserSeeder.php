@@ -36,12 +36,12 @@ class UserSeeder extends Seeder
         // Get random courses
         $courses = Course::inRandomOrder()->take(4)->pluck('id');
         // Attach 2 random courses to user1
-        $user1->userCourses()->attach($courses->slice(0, 2), [
+        $user1->enrolledCourses()->attach($courses->slice(0, 2), [
             'started_at' => now(),
             'completed' => false,
         ]);
         // Attach 1 random course to user2
-        $user2->userCourses()->attach($courses->slice(2, 1), [
+        $user2->enrolledCourses()->attach($courses->slice(2, 1), [
             'started_at' => now(),
             'completed' => true,
         ]);

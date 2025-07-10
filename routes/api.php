@@ -21,7 +21,7 @@ Route::middleware('guest')->group(function () {
     });
     Route::post('/auth/social/{provider}', [SocialAuthController::class, 'handle'])->name('social.auth');
 
-    Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
+    Route::get('all-courses', [CourseController::class, 'getAllCourses']);
     Route::apiResource('lessons', LessonController::class)->only(['index', 'show']);
     Route::apiResource('courses.lessons', CourseLessonController::class)->only(['index']);
 
@@ -37,10 +37,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::apiResource('lessons', LessonController::class)->only(['store', 'update', 'destroy']);
     // course
-    Route::get('courses/user/course', [CourseController::class, 'getUserCourses']);
-    Route::post('/courses/{course}/start', [CourseController::class, 'startCourse']);
+    Route::get('courses/user/course', [CourseController::class, 'getUserEnrolledCourses']);
+    Route::post('/courses/{course}/start', [CourseController::class, 'enrollInCourse']);
     Route::post('/courses/{course}/complete', [CourseController::class, 'markCourseCompleted']);
-    Route::apiResource('courses', CourseController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('courses', CourseController::class);
     Route::apiResource('courses.lessons', CourseLessonController::class)->only(['store']);
 
     // Example placeholder for future routes

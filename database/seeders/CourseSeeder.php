@@ -43,6 +43,7 @@ class CourseSeeder extends Seeder
         foreach ($courses as $courseData) {
             $course = Course::factory()->create([
                 'title' => $courseData['title'],
+                'slug' => $courseData['title'],
                 'description' => $courseData['description'],
                 'color_code' => $courseData['color_code'],
             ]);

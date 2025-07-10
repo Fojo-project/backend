@@ -23,6 +23,7 @@ class Lesson extends Model
     protected $fillable = [
         'course_id',
         'title',
+        'slug',
         'subtitle',
         'lesson_note',
         'lesson_content',
@@ -35,6 +36,10 @@ class Lesson extends Model
         static::addGlobalScope('ordered', function ($query) {
             $query->orderBy('lesson_order', 'asc');
         });
+    }
+    public function getRouteKeyName()
+    {
+        return 'slug';
     }
     public function course()
     {

@@ -22,8 +22,9 @@ class UpdateCourseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|in:foundations,discipleship,ministry,leadership',
-            'subtitle' => 'nullable|string|max:255',
+            'title' => 'required|string',
+            'slug' => 'required|string',
+            'subtitle' => 'nullable|string',
             'description' => 'nullable|string',
             'about_course' => 'nullable|string',
             'course_video' => 'nullable|url',

@@ -17,8 +17,11 @@ class LessonFactory extends Factory
      */
     public function definition(): array
     {
+        $title = $this->faker->unique()->sentence;
+        $slug = str($title)->slug();
         return [
-            'title' => $this->faker->sentence,
+            'title' => $title,
+            'slug' => $slug,
             'subtitle' => $this->faker->sentence,
             'lesson_note' => $this->faker->paragraph(10),
             'lesson_content' => $this->faker->paragraph(50),
