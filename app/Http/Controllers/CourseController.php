@@ -40,9 +40,14 @@ class CourseController extends Controller
     /**
      * Display a course resource.
      */
-    public function show(Course $course)
+    public function show(Request $request, Course $course)
     {
         $course->load(['lessons', 'enrolledUsers']);
+        // Eager load completedLessons relationship once
+        $user = $request->user();
+        if ($user) {
+            $user->load('completedLessons');
+        }
         return $this->successResponse(new CourseResource($course), 'Course fetched successfully');
     }
 
