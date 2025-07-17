@@ -34,7 +34,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // profile
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/me', 'getUserSession');
-        Route::put('/profile-update', 'update')->name('profile.update');
+        Route::put('/profile/update', 'updateProfile')->name('profile.update');
+        Route::put('/profile/password', 'changePassword')->name('profile.password.change');
     });
     // lessons
     Route::apiResource('lessons', LessonController::class)->only(['store', 'update', 'destroy']);
