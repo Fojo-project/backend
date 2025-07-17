@@ -15,12 +15,14 @@ return new class extends Migration {
             $table->string('full_name');
             $table->string('email')->unique();
             $table->string('provider')->nullable();
+            $table->string('delete')->nullable();
             $table->string('verification_token')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('verification_token_created_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->softDeletes();
+            $table->text('delete_reason')->nullable();
             $table->timestamps();
         });
         Schema::create('password_reset_tokens', function (Blueprint $table) {

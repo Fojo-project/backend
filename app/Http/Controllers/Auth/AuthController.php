@@ -32,7 +32,6 @@ class AuthController extends Controller
     public function register(RegisterRequest $request)
     {
         $data = $request->validated();
-
         $verificationToken = Str::random(64);
         $verifyUrl = sprintf(
             '%s/email-verification?token=%s&email=%s',

@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Status;
 use App\Enums\UserRole;
-use App\traits\HasCustomSanctumTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -14,8 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasRoles, HasApiTokens;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens, SoftDeletes;
     protected $guard_name = 'api';
 
     /**
@@ -28,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'provider',
+        'delete_reason',
         'remember_token',
         'email_verified_at',
         'verification_token',
@@ -61,6 +60,7 @@ class User extends Authenticatable
             'verification_token_created_at' => 'datetime',
             'role' => UserRole::class,
             'status' => Status::class,
+            'deleted_at' => 'datetime',
         ];
     }
     public function enrolledCourses()

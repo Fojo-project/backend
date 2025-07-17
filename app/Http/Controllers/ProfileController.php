@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\DeleteAccountRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -45,31 +47,33 @@ class ProfileController extends Controller
         ]);
         return $this->successResponse(null, 'Password changed successfully.', 201);
     }
-
-
-
     /**
-     * Store a newly created resource in storage.
+     * Delete the authenticated user's account.
      */
-    public function store(Request $request)
+    public function deleteAccount(DeleteAccountRequest $request)
     {
-        //
+        $user = auth()->user();
+        $user->update([
+            'delete_reason' => $request->reason,
+        ]);
+        $user->delete();
+        $user->tokens()->delete();
+        return $this->successResponse(null, 'Your account has been deactivated successfully.');
     }
-
     /**
-     * Display the specified resource.
+     * Restore the authenticated user's account.
      */
-    public function show(string $id)
+    public function restoreAccount(Request $request)
     {
-        //
-    }
-
-
-    /**
-     * Delete user account.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+        $user = User::withTrashed()->where('email', $request->email)->firstOrFail();
+        if (!$user->trashed()) {
+            return $this->errorResponse(null, 'Account is already active.', 400);
+        }
+        $user->restore();
+        $user->update(['delete_reason' => null]);
+        return $this->successResponse(null, 'Your account has been restored successfully. You can now log in.');
     }
 }

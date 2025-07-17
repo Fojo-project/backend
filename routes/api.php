@@ -26,6 +26,10 @@ Route::middleware('guest')->group(function () {
     Route::apiResource('courses.lessons', CourseLessonController::class)->only(['index']);
 
     Route::apiResource('/test', TestController::class);
+
+    //to be moved to admin routes
+    Route::post('/profile/restore', [ProfileController::class, 'restoreAccount'])->name('profile.restore');
+
 });
 
 // Authenticated Routes
@@ -34,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // profile
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/me', 'getUserSession');
+        Route::delete('/profile', 'deleteAccount')->name('profile.delete');
         Route::put('/profile/update', 'updateProfile')->name('profile.update');
         Route::put('/profile/password', 'changePassword')->name('profile.password.change');
     });
