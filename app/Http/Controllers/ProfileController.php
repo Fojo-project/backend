@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
@@ -18,11 +20,14 @@ class ProfileController extends Controller
         return $this->successResponse($data, 'User Details fetched successfully', 200);
     }
     /**
-     * Display a listing of the resource.
+     * Update the authenticated user's profile.
      */
-    public function index()
+    public function update(UpdateProfileRequest $request)
     {
-        //
+        $user = Auth::user();
+        $user->update($request->validated());
+        $data = new UserResource($user);
+        return $this->successResponse($data, 'Profile updated successfully.');
     }
 
 
@@ -43,16 +48,9 @@ class ProfileController extends Controller
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete user account.
      */
     public function destroy(string $id)
     {
