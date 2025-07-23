@@ -26,6 +26,7 @@ class User extends Authenticatable
         'email',
         'password',
         'provider',
+        'avatar',
         'delete_reason',
         'remember_token',
         'email_verified_at',
