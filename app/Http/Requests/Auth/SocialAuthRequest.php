@@ -31,6 +31,7 @@ class SocialAuthRequest extends FormRequest
             'provider' => ['required', 'string', Rule::in(array_column(Provider::cases(), 'value'))],
             'full_name' => ['string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
+            'avatar' => ['nullable', 'string'],
         ];
     }
 

@@ -20,6 +20,7 @@ class SocialAuthController extends Controller
                 ['email' => $data['email']],
                 [
                     'full_name' => $data['full_name'],
+                    'avatar' => $data['avatar'],
                     'provider' => $provider,
                     'password' => Hash::make(Str::random(16)),
                     'email_verified_at' => now(),
