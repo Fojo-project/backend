@@ -26,6 +26,8 @@ Route::middleware('guest')->group(function () {
     Route::apiResource('courses.lessons', CourseLessonController::class)->only(['index']);
 
     Route::apiResource('/test', TestController::class);
+    Route::post('/upload-file', [TestController::class, 'uploadFile']);
+    Route::delete('/cloudinary/delete', [TestController::class, 'deleteFile']);
 
     //to be moved to admin routes
     Route::post('/profile/restore', [ProfileController::class, 'restoreAccount'])->name('profile.restore');
