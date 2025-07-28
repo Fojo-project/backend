@@ -106,12 +106,13 @@ class User extends Authenticatable
                 ->where('course_id', $courseId)
                 ->pluck('lesson_id');
 
-            $hoursSpent += \App\Models\Lesson::whereIn('id', $lessonIds)->sum('duration');
+            $hoursSpent += \App\Models\Lesson::whereIn('id', $lessonIds)->sum('video_duration');
         }
 
         return [
-            'ongoing_course' => $ongoing,
-            'completed_course' => $completed,
+            'ongoing_course' => $ongoing ?? 0,
+            'completed_course' => $completed ?? 0,
+            'certificate' => $completed ?? 0,
             'hours_spent' => round($hoursSpent / 60, 1),
         ];
     }
