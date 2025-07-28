@@ -5,6 +5,7 @@ namespace App\Enums;
 enum Status: string
 {
     case PENDING = 'pending';             // Awaiting verification/activation
+    case SCHEDULED = 'scheduled';             // Awaiting verification/activation
     case ACTIVE = 'active';               // Operational
     case INACTIVE = 'inactive';           // Temporarily disabled
     case SUSPENDED = 'suspended';         // Temporarily blocked
@@ -13,6 +14,8 @@ enum Status: string
 
     // --- Student-specific academic states ---
     case ENROLLED = 'enrolled';           // Currently studying
+    case LIVE = 'live';           // Currently studying
+    case ENDED = 'ended';           // Currently studying
     case GRADUATED = 'graduated';         // Completed school
     case EXPELLED = 'expelled';           // Expelled
     case DROPPED_OUT = 'dropped_out';     // Voluntarily left

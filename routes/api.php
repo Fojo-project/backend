@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseLessonController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\LessonController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
@@ -53,4 +54,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/courses/{course}/complete', [CourseController::class, 'markCourseCompleted']);
     Route::apiResource('courses', CourseController::class);
     Route::apiResource('courses.lessons', CourseLessonController::class)->only(['store']);
+    //events
+    Route::get('/events/scheduled', [EventController::class, 'scheduledEvents']);
+    Route::get('/events/live', [EventController::class, 'liveEvents']);
+    Route::apiResource('events', EventController::class);
 });

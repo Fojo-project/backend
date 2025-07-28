@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\UploadService;
-use App\Utils\Utils;
-use Cloudinary\Cloudinary;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
