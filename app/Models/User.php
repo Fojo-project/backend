@@ -76,4 +76,43 @@ class User extends Authenticatable
             ->withPivot(['completed', 'completed_at'])
             ->withTimestamps();
     }
+    public function getDashboardStats(): array
+    {
+        $user = $this;
+        // Get all course IDs the user has started
+        $startedCourseIds = $user->enrolledCourses()->pluck('courses.id');
+
+        // Prepare tracking
+        $ongoing = 0;
+        $completed = 0;
+        $hoursSpent = 0;
+
+        foreach ($startedCourseIds as $courseId) {
+            $course = \App\Models\Course::withCount('lessons')->find($courseId);
+
+            $completedLessonsCount = $user->completedLessons()
+                ->where('course_id', $courseId)
+                ->count();
+
+            // Completed or Ongoing
+            if ($completedLessonsCount >= $course->lessons_count) {
+                $completed++;
+            } else {
+                $ongoing++;
+            }
+
+            // Sum up lesson durations
+            $lessonIds = $user->completedLessons()
+                ->where('course_id', $courseId)
+                ->pluck('lesson_id');
+
+            $hoursSpent += \App\Models\Lesson::whereIn('id', $lessonIds)->sum('duration');
+        }
+
+        return [
+            'ongoing_course' => $ongoing,
+            'completed_course' => $completed,
+            'hours_spent' => round($hoursSpent / 60, 1),
+        ];
+    }
 }

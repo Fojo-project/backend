@@ -21,6 +21,13 @@ class UserResource extends JsonResource
             'provider' => $this->provider,
             'avatar' => $this->avatar,
             'role' => $this->roles->pluck('name')->first(),
+            'dashboard' => $this->when(auth()->check(), $this->getDashboardStats()),
+            // 'dashboard' => [
+            //     'ongoing_course' => 0,
+            //     'completed_course' => 0,
+            //     'certificate' => 0,
+            //     'hours_spent' => 0,
+            // ],
             'deleted_at' => $this->deleted_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

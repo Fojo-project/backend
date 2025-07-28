@@ -41,6 +41,10 @@ class CourseResource extends JsonResource
             'course_image' => $this->course_image,
             'course_text' => $this->course_text,
             'color_code' => $this->color_code,
+            'isCompleted' => $this->when(
+                $user && $totalLessons > 0,
+                $completedLessonCount >= $totalLessons
+            ),
             'lessons' => LessonResource::collection($lessons),
             'lesson_count' => $lessons->count(),
             'lesson_progress' => [
