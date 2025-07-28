@@ -23,7 +23,18 @@ class LessonFactory extends Factory
             'title' => $title,
             'slug' => $slug,
             'subtitle' => $this->faker->sentence,
-            'video_duration' => 10,
+            'lesson_duration' => $this->faker->randomElement([
+                20,
+                30,
+                45,
+                25,
+                60,
+                90,
+                95,
+                120,
+                150,
+                180
+            ]),
             'lesson_note' => $this->faker->paragraph(10),
             'lesson_content' => $this->faker->paragraph(50),
             'lesson_video' => $this->faker->randomElement([

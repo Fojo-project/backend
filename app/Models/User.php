@@ -101,12 +101,12 @@ class User extends Authenticatable
                 $ongoing++;
             }
 
-            // Sum up lesson durations
+            // Sum up lesson durationsKW
             $lessonIds = $user->completedLessons()
                 ->where('course_id', $courseId)
                 ->pluck('lesson_id');
 
-            $hoursSpent += \App\Models\Lesson::whereIn('id', $lessonIds)->sum('video_duration');
+            $hoursSpent += \App\Models\Lesson::whereIn('id', $lessonIds)->sum('lesson_duration');
         }
 
         return [

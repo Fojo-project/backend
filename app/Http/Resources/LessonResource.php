@@ -20,7 +20,6 @@ class LessonResource extends JsonResource
             'id' => $this->id,
             'course_id' => $this->course_id,
             'lesson_order' => $this->lesson_order,
-            'video_duration' => $this->video_duration,
             'title' => $this->title,
             'slug' => $this->slug,
             'subtitle' => $this->subtitle,
@@ -28,7 +27,7 @@ class LessonResource extends JsonResource
             'lesson_content' => $this->lesson_content,
             'lesson_video' => $this->lesson_video,
             'lesson_image' => $this->lesson_image,
-            'lesson_duration' => $this->lessons_duration,
+            'lesson_duration' => $this->lesson_duration,
             'isCompleted' => $user
                 ? $user->completedLessons->contains($this->id)
                 : false,

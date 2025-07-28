@@ -27,7 +27,7 @@ class CourseResource extends JsonResource
                 ->count();
         }
         $totalDuration = $this->whenLoaded('lessons')
-            ? $this->lessons->sum('lessons_duration')
+            ? $this->lessons->sum('lesson_duration')
             : 0;
 
         return [

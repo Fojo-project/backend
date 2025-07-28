@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('lessons', function (Blueprint $table) {
-            $table->unsignedInteger('video_duration')->nullable()->after('lesson_image'); // in minutes
+            $table->unsignedInteger('lesson_duration')->nullable()->after('lesson_image'); // in minutes
         });
     }
 
@@ -21,7 +21,7 @@ return new class extends Migration {
     public function down(): void
     {
         Schema::table('lessons', function (Blueprint $table) {
-            $table->dropColumn('video_duration');
+            $table->dropColumn('lesson_duration');
         });
     }
 };
