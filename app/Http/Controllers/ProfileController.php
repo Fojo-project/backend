@@ -19,9 +19,15 @@ class ProfileController extends Controller
 
     public function getUserSession(Request $request)
     {
-        $user = $request->user();
-        $data = new UserResource($user);
-        return $this->successResponse($data, 'User Details fetched successfully', 200);
+        $user = auth()->user()->load([
+            'roles',
+            'enrolledCourses.lessons',
+            'completedLessons',
+        ]);
+        return $this->successResponse(
+            new UserResource($user),
+            'Profile fetched successfully.'
+        );
     }
     /**
      * Update the authenticated user's profile.
