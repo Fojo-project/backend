@@ -4,6 +4,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseLessonController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\SocialAuthController;
@@ -58,4 +59,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/events/scheduled', [EventController::class, 'scheduledEvents']);
     Route::get('/events/live', [EventController::class, 'liveEvents']);
     Route::apiResource('events', EventController::class);
+    //search
+    Route::get('/search', [SearchController::class, 'search'])->name('search');
 });
