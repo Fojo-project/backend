@@ -11,40 +11,27 @@ class EventController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $limit = $request->query('limit', 10);
         $events = Event::orderBy('start_date')
             ->orderBy('start_time')
-            ->get();
-
-        return $this->successResponse(EventResource::collection($events), 'Events retrieved successfully.', 200);
+            ->paginate($limit);
+        return $this->paginatedResponse(EventResource::collection($events), 'Events retrieved successfully.', 200);
     }
 
-    public function upcomingEvents()
+    public function scheduledEvents(Request $request)
     {
-        $now = Carbon::now();
-        $today = $now->toDateString();
-        $time = $now->toTimeString();
-
-        $events = Event::where(function ($query) use ($today, $time) {
-            $query->where('start_date', '>', $today)
-                ->orWhere(function ($query) use ($today, $time) {
-                    $query->where('start_date', $today)
-                        ->where('start_time', '>=', $time);
-                });
-        })->orderBy('start_date')->orderBy('start_time')->get();
+        $limit = $request->query('limit', 10);
+        $events = Event::scheduled()->latest()->paginate($limit);
+        return $this->paginatedResponse(EventResource::collection($events), 'Scheduled events retrieved successfully.', 200);
     }
 
-    public function scheduledEvents()
+    public function liveEvents(Request $request)
     {
-        $events = Event::scheduled()->latest()->get();
-        return $this->successResponse(EventResource::collection($events), 'Scheduled events retrieved successfully.', 200);
-    }
-
-    public function liveEvents()
-    {
-        $events = Event::live()->latest()->get();
-        return $this->successResponse(EventResource::collection($events), 'Live events retrieved successfully.', 200);
+        $limit = $request->query('limit', 10);
+        $events = Event::live()->latest()->paginate($limit);
+        return $this->paginatedResponse(EventResource::collection($events), 'Live events retrieved successfully.', 200);
     }
 
     /**
