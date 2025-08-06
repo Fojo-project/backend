@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseLessonController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LessonController;
 use App\Http\Controllers\SearchController;
@@ -39,6 +40,8 @@ Route::middleware('guest')->group(function () {
 // Authenticated Routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    // Dashboard
+    Route::apiResource('/dashboard', DashboardController::class);
     // profile
     Route::controller(ProfileController::class)->group(function () {
         Route::get('/me', 'getUserSession');
