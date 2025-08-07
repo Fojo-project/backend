@@ -65,7 +65,7 @@ class ProfileController extends Controller
         $user->update([
             'delete_reason' => $request->reason,
         ]);
-        $user->forceDelete();
+        $user->delete();
         $user->tokens()->delete();
         return $this->successResponse(null, 'Your account has been deactivated successfully.');
     }

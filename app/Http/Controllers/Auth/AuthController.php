@@ -28,7 +28,6 @@ class AuthController extends Controller
         $data = ['token' => $token];
         return $this->successResponse($data, 'Logged in successfully', 200);
     }
-
     public function register(RegisterRequest $request)
     {
         $data = $request->validated();
@@ -43,11 +42,26 @@ class AuthController extends Controller
         DB::beginTransaction();
 
         try {
-            $user = User::create([
-                ...$data,
-                'verification_token' => Hash::make($verificationToken),
-                'verification_token_created_at' => now(),
-            ]);
+            $user = User::withTrashed()->where('email', $data['email'])->first();
+
+            if ($user) {
+                if ($user->trashed()) {
+                    $user->restore();
+                    $user->update([
+                        'delete_reason' => null,
+                        'verification_token' => Hash::make($verificationToken),
+                        'verification_token_created_at' => now(),
+                    ]);
+                } else {
+                    return $this->errorResponse(null, 'Email is already in use.', 409);
+                }
+            } else {
+                $user = User::create([
+                    ...$data,
+                    'verification_token' => Hash::make($verificationToken),
+                    'verification_token_created_at' => now(),
+                ]);
+            }
 
             $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
 
@@ -55,11 +69,9 @@ class AuthController extends Controller
 
             SendEmailVerificationJob::dispatch($user->full_name, $user->email, $verifyUrl)
                 ->delay(now()->addSeconds(5));
-            // Mail::to($user->email)->send(
-            //     new EmailVerificationMail($user->full_name, $verifyUrl)
-            // );
 
             $token = $user->createToken($user->email)->plainTextToken;
+
             DB::commit();
 
             return $this->successResponse([
@@ -71,6 +83,49 @@ class AuthController extends Controller
             return $this->errorResponse(null, 'Registration failed. Please try again later.', 500);
         }
     }
+
+    // public function register(RegisterRequest $request)
+    // {
+    //     $data = $request->validated();
+    //     $verificationToken = Str::random(64);
+    //     $verifyUrl = sprintf(
+    //         '%s/email-verification?token=%s&email=%s',
+    //         rtrim(config('app.frontend_url'), '/'),
+    //         $verificationToken,
+    //         urlencode($data['email'])
+    //     );
+
+    //     DB::beginTransaction();
+
+    //     try {
+    //         $user = User::create([
+    //             ...$data,
+    //             'verification_token' => Hash::make($verificationToken),
+    //             'verification_token_created_at' => now(),
+    //         ]);
+
+    //         $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
+
+    //         $request->authenticate();
+
+    //         SendEmailVerificationJob::dispatch($user->full_name, $user->email, $verifyUrl)
+    //             ->delay(now()->addSeconds(5));
+    //         // Mail::to($user->email)->send(
+    //         //     new EmailVerificationMail($user->full_name, $verifyUrl)
+    //         // );
+
+    //         $token = $user->createToken($user->email)->plainTextToken;
+    //         DB::commit();
+
+    //         return $this->successResponse([
+    //             'token' => $token,
+    //         ], 'Registration successful. A verification link has been sent to your email.', 201);
+
+    //     } catch (\Throwable $e) {
+    //         DB::rollBack();
+    //         return $this->errorResponse(null, 'Registration failed. Please try again later.', 500);
+    //     }
+    // }
 
     public function resetPassword(Request $request): JsonResponse
     {
