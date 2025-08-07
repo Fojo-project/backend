@@ -59,6 +59,9 @@ class ProfileController extends Controller
     public function deleteAccount(DeleteAccountRequest $request)
     {
         $user = auth()->user();
+        if (!Hash::check($request->input('password'), $user->password)) {
+            return $this->errorResponse(null, 'Current password is incorrect.', 422);
+        }
         $user->update([
             'delete_reason' => $request->reason,
         ]);

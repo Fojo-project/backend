@@ -23,6 +23,7 @@ class DeleteAccountRequest extends FormRequest
     {
         return [
             'reason' => ['required', 'string', 'max:1000'],
+            'password' => ['required', 'string'],
         ];
     }
 }
