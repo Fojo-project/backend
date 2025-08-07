@@ -50,6 +50,7 @@ class DashboardResource extends JsonResource
         return [
             'title' => $ongoingCourse->title,
             'slug' => $ongoingCourse->slug,
+            'course_image' => $ongoingCourse->course_image,
             'completed_lessons' => $completedLessons,
             'total_lessons' => $totalLessons,
             'percentage_completed' => $totalLessons > 0

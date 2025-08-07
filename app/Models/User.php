@@ -64,6 +64,14 @@ class User extends Authenticatable
             'deleted_at' => 'datetime',
         ];
     }
+
+    protected static function booted()
+    {
+        static::forceDeleted(function ($user) {
+            $user->courses()->detach();
+            $user->lessons()->detach();
+        });
+    }
     public function enrolledCourses()
     {
         return $this->belongsToMany(Course::class, 'course_user')
