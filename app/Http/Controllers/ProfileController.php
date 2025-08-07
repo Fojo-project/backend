@@ -35,9 +35,9 @@ class ProfileController extends Controller
     public function updateProfile(UpdateProfileRequest $request)
     {
         $user = Auth::user();
-        $user->update($request->validated());
-        $data = new UserResource($user);
-        return $this->successResponse($data, 'Profile updated successfully.');
+        $validated = $request->validated();
+        $user->update($validated);
+        return $this->successResponse(new UserResource($user), 'Profile updated successfully.');
     }
     /**
      * Change the authenticated user's password.

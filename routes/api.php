@@ -5,6 +5,7 @@ use App\Http\Controllers\CourseLessonController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\MediaUploadController;
 use App\Http\Controllers\SearchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
@@ -64,4 +65,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('events', EventController::class);
     //search
     Route::get('/search', [SearchController::class, 'search'])->name('search');
+    //media upload
+    Route::post('/upload', [MediaUploadController::class, 'upload'])->name('media.upload');
 });
