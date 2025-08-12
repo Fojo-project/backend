@@ -38,19 +38,6 @@ class Lesson extends Model
             $query->orderBy('lesson_order', 'asc');
         });
     }
-    // public function getLessonsDurationAttribute(): string
-    // {
-    //     $readingDuration = 0;
-    //     if ($this->lesson_note) {
-    //         $wordCount = str_word_count(strip_tags($this->lesson_note));
-    //         $readingDuration += ceil($wordCount / 200);
-    //     }
-    //     if ($this->lesson_content) {
-    //         $wordCount = str_word_count(strip_tags($this->lesson_content));
-    //         $readingDuration += ceil($wordCount / 200);
-    //     }
-    //     return $readingDuration + ($this->lesson_duration ?? 0);
-    // }
     public function getRouteKeyName()
     {
         return 'slug';
