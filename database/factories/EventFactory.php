@@ -39,12 +39,10 @@ class EventFactory extends Factory
                 EventStatus::LIVE,
             ])
         };
-
         return [
             'slug' => $slug,
             'title' => $title,
             'description' => $this->faker->paragraph(),
-
             'avatar' => $this->faker->imageUrl(640, 480, 'people', true),
             'video_url' => $this->faker->randomElement([
                 'https://www.youtube.com/watch?v=aqz-KE-bpKQ',
@@ -56,12 +54,10 @@ class EventFactory extends Factory
                 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
                 'https://www.w3schools.com/html/horse.mp3',
             ]),
-
             'start_date' => $startDate->format('Y-m-d'),
             'start_time' => $startDate->format('H:i:s'),
             'end_date' => $endDate->format('Y-m-d'),
             'end_time' => $endDate->format('H:i:s'),
-
             'status' => $status->value,
             'is_live' => $status === EventStatus::LIVE ? true : false,
         ];
