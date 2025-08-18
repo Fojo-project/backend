@@ -17,13 +17,13 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $user = User::factory()->create([
-            'full_name' => 'User One',
-            'email' => 'user@example.com',
+            'full_name' => 'admin',
+            'email' => 'admin@example.com',
             'password' => \Hash::make('string'),
             'verification_token' => \Hash::make(Str::random(64)),
             'verification_token_created_at' => now(),
         ]);
-        $user->assignRole(UserRole::LEARNER->value);
+        $user->assignRole(UserRole::ADMIN->value);
 
         $user1 = User::factory()->create([
             'full_name' => 'User Two',
