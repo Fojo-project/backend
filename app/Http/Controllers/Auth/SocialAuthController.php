@@ -29,7 +29,7 @@ class SocialAuthController extends Controller
             $user->assignRole(UserRole::LEARNER->value);
             $request->authenticateEmailOnly($user);
             $token = $user->createToken($user->email)->plainTextToken;
-            $data = ['token' => $token];
+            $data = ['token' => $token, 'role' => $user->roles->pluck('name')->first()];
             return $this->successResponse($data, 'User was registered/logged in successfully', 201);
         } catch (\Exception $e) {
             return $this->errorResponse(NULL, $e->getMessage() ?: 'Error, please try again!!!', 500);
