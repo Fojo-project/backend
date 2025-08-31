@@ -46,7 +46,6 @@ class CourseSeeder extends Seeder
                 "course_image" => "/images/course/leadership.jpg"
             ],
         ];
-
         foreach ($courses as $courseData) {
             $course = Course::factory()->create([
                 'title' => $courseData['title'],
