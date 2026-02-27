@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\SocialAuthController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TestController;
+use App\Http\Controllers\UserController;
 
 // Guest Routes
 Route::middleware('guest')->group(function () {
@@ -35,7 +36,6 @@ Route::middleware('guest')->group(function () {
 
     //to be moved to admin routes
     Route::post('/profile/restore', [ProfileController::class, 'restoreAccount'])->name('profile.restore');
-
 });
 
 // Authenticated Routes
@@ -67,4 +67,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/search', [SearchController::class, 'search'])->name('search');
     //media upload
     Route::post('/upload', [MediaUploadController::class, 'upload'])->name('media.upload');
+
+
+    // admin
+    Route::prefix('admin')
+        ->name('admin.')
+        ->middleware(['role:admin'])
+        ->group(function () {
+
+            Route::prefix('users')->group(function () {
+                Route::get('/', [UserController::class, 'adminIndex']);
+            });
+        });
 });

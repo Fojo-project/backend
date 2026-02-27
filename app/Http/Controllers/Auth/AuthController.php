@@ -78,55 +78,11 @@ class AuthController extends Controller
                 'token' => $token,
                 'role' => $user->roles->pluck('name')->first(),
             ], 'Registration successful. A verification link has been sent to your email.', 201);
-
         } catch (\Throwable $e) {
             DB::rollBack();
             return $this->errorResponse(null, 'Registration failed. Please try again later.', 500);
         }
     }
-
-    // public function register(RegisterRequest $request)
-    // {
-    //     $data = $request->validated();
-    //     $verificationToken = Str::random(64);
-    //     $verifyUrl = sprintf(
-    //         '%s/email-verification?token=%s&email=%s',
-    //         rtrim(config('app.frontend_url'), '/'),
-    //         $verificationToken,
-    //         urlencode($data['email'])
-    //     );
-
-    //     DB::beginTransaction();
-
-    //     try {
-    //         $user = User::create([
-    //             ...$data,
-    //             'verification_token' => Hash::make($verificationToken),
-    //             'verification_token_created_at' => now(),
-    //         ]);
-
-    //         $user->assignRole($data['role'] ?? UserRole::LEARNER->value);
-
-    //         $request->authenticate();
-
-    //         SendEmailVerificationJob::dispatch($user->full_name, $user->email, $verifyUrl)
-    //             ->delay(now()->addSeconds(5));
-    //         // Mail::to($user->email)->send(
-    //         //     new EmailVerificationMail($user->full_name, $verifyUrl)
-    //         // );
-
-    //         $token = $user->createToken($user->email)->plainTextToken;
-    //         DB::commit();
-
-    //         return $this->successResponse([
-    //             'token' => $token,
-    //         ], 'Registration successful. A verification link has been sent to your email.', 201);
-
-    //     } catch (\Throwable $e) {
-    //         DB::rollBack();
-    //         return $this->errorResponse(null, 'Registration failed. Please try again later.', 500);
-    //     }
-    // }
 
     public function resetPassword(Request $request): JsonResponse
     {
@@ -177,6 +133,7 @@ class AuthController extends Controller
             'Password reset link generated.',
         );
     }
+
     public function resendVerification(Request $request): JsonResponse
     {
         $data = $request->validate([
@@ -205,6 +162,7 @@ class AuthController extends Controller
         $data = ['email_verification_url' => $verifyUrl];
         return $this->successResponse(null, 'A verification link has been resent to your email.', 201);
     }
+
     public function verifyEmail(Request $request)
     {
         $data = $request->validate([
