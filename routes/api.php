@@ -77,6 +77,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
             Route::prefix('users')->group(function () {
                 Route::get('/', [UserController::class, 'adminIndex']);
+                Route::post('/{user}/roles', [UserController::class, 'assignRole']);
+                Route::delete('/{user}/roles/{role}', [UserController::class, 'unassignRole']);
             });
         });
 });

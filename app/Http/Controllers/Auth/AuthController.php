@@ -25,7 +25,7 @@ class AuthController extends Controller
         $request->authenticate();
         $user = Auth::user();
         $token = $user->createToken($user->email)->plainTextToken;
-        $data = ['token' => $token, 'role' => $user->roles->pluck('name')->first()];
+        $data = ['token' => $token, 'roles' => $user->roles->pluck('name')->all()];
         return $this->successResponse($data, 'Logged in successfully', 200);
     }
     public function register(RegisterRequest $request)
@@ -76,7 +76,7 @@ class AuthController extends Controller
 
             return $this->successResponse([
                 'token' => $token,
-                'role' => $user->roles->pluck('name')->first(),
+                'roles' => $user->roles->pluck('name')->all(),
             ], 'Registration successful. A verification link has been sent to your email.', 201);
         } catch (\Throwable $e) {
             DB::rollBack();

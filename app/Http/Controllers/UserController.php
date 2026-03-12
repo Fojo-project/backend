@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -38,10 +40,29 @@ class UserController extends Controller
             ->paginate($request->input('per_page', 15));
 
         $users->through(fn(User $user) => tap($user, function () use ($user) {
-            $user->role = $user->roles->first()?->name;
-            unset($user->roles);
+            $user->setAttribute('roles', $user->roles->pluck('name')->values()->all());
+            $user->unsetRelation('roles');
         }));
-
         return $this->paginatedResponse($users, 'Users fetched successfully', 200);
+    }
+
+    public function assignRole(Request $request, User $user)
+    {
+        $request->validate(['role' => 'required|string|exists:roles,name']);
+        $user->assignRole($request->role);
+        return $this->successResponse(null, 'Role assigned successfully');
+    }
+
+    public function unassignRole(User $user, string $role)
+    {
+        abort_unless(Role::where('name', $role)->exists(), 404, 'Role not found');
+        abort_unless($user->hasRole($role), 422, 'User does not have this role');
+
+        $user->removeRole($role);
+
+        if ($user->roles()->count() === 0) {
+            $user->assignRole(UserRole::LEARNER->value);
+        }
+        return $this->successResponse(null, 'Role unassigned successfully');
     }
 }
